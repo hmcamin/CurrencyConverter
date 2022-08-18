@@ -71,7 +71,7 @@ namespace ConsoleApp3
             {
                 string path = config.Item1;
                 string[] a = path.Split("-");
-                foreach (string v in a) if (currencyList.IndexOf(v) == -1) currencyList.Add(v);
+                foreach (string currency in a) if (currencyList.IndexOf(currency) == -1) currencyList.Add(currency);
             }
 
             Console.WriteLine("List of currencies:");
@@ -80,11 +80,8 @@ namespace ConsoleApp3
         public void ClearConfiguration()
         {
             for (int i = defaultConfigurationCount; i < conversionRatesList.Count; i++)
-            {
                 conversionRatesList.RemoveAt(i);
-            }
         }
-        // OK
         public void UpdateConfiguration(IEnumerable<Tuple<string, string, double>> conversionRates)
         {
             foreach (Tuple<string, string, double> config in conversionRates)
@@ -98,7 +95,6 @@ namespace ConsoleApp3
                 conversionRatesList.Add(newConfig);
             }
         }
-        // OK
         public double Convert(string fromCurrency, string toCurrency, double amount)
         {
             double conversionRate = conversionPath(fromCurrency, toCurrency);
@@ -117,11 +113,11 @@ namespace ConsoleApp3
             conversionPathList.Clear();
             // look for toCurrency
             iterate(convList, fromCurrency, toCurrency, preNode, node, weight, exchangeRate);
+            
             // print path list
+            Console.WriteLine("List of conversion pathes:");
             foreach (Tuple<string, int, double> path in conversionPathList)
-            {
-                Console.WriteLine("path: {0}, weight: {1}, exchangeRate: {2}", path.Item1, path.Item2, path.Item3);
-            }
+                Console.WriteLine("\t path: {0}, weight: {1}, exchangeRate: {2}", path.Item1, path.Item2, path.Item3);
 
             // find shortest path
             int w = conversionPathList[0].Item2;
@@ -136,7 +132,7 @@ namespace ConsoleApp3
             int found = new_cl.FindIndex(a => a.Item1.Contains(endPoint));
             return found;
         }
-        private void foundEndPoint(Tuple<string, double> cl, string endPoint, string node, int weight, double exchangeRate)
+        private void foundEndPoint(Tuple<string, double> cl, string endPoint, int weight, double exchangeRate)
         {
             string fromTo = cl.Item1;
             double rate = cl.Item2;
@@ -162,7 +158,7 @@ namespace ConsoleApp3
             int found = checkWholeVertex(new_cl, endPoint);
             if (found != -1)
             {
-                foundEndPoint(new_cl[found], endPoint, node, weight, exchangeRate);
+                foundEndPoint(new_cl[found], endPoint, weight, exchangeRate);
             } else
             {
                 foreach (Tuple<string, double> config in new_cl)
